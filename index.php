@@ -19,11 +19,16 @@
 
   $sectionID = (int)$result->fetch_assoc()['ID'];
 
+
+  $sections = $db->query("  SELECT *
+                            FROM Sections
+                         ");
+
   $subSections = $db->query(" SELECT s.*, sr.*
                               FROM Sections s
-                                INNER JOIN SectionRelationships sr ON s.ID = sr.RelativeSectionID
-                              WHERE sr.SectionID = " . $sectionID . " AND sr.RelativeIsChild = 1
-                            ");
+                                INNER JOIN SectionRelationships sr ON s.ID = sr.ChildSectionID
+                              WHERE sr.SectionID = " . $sectionID
+                            );
 
   $events = $db->query("  SELECT *
                           FROM " . str_replace(' ', '', $sectionName) . "Events
@@ -59,43 +64,75 @@
 
 
 
-          
-          
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">TactiCal</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+            <li><a href="#" data-toggle="collapse">Reports</a></li>
+            <li><a href="#">Analytics</a></li>
+          </ul>
+        </div>
+
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Dashboard</h1>
+
 <div class="col-lg-6">
   <div class="panel panel-default">
-    <div class="panel-heading"><h3>Sub Sections</h3></div>
+    <div class="panel-heading"><h3>Sections</h3></div>
     <div class="panel-body">
       <table class="table table-condensed" style="border-collapse:collapse;">
-
-        <thead>
-          <tr><th>&nbsp;</th>
-            <th>Sub Section</th>
-            <th>Description</th>
-          </tr>
-        </thead>
 
         <tbody>
           <?php
             $i = 0;
-            foreach ($subSections as $row) {
+            foreach ($sections as $section) {
+
+              $subSections = $db->query(" SELECT s.*, sr.*
+                                          FROM Sections s
+                                            INNER JOIN SectionRelationships sr ON s.ID = sr.ChildSectionID
+                                          WHERE sr.SectionID = " . $section['ID'] . "                                            
+                ");
+
               echo "<tr data-toggle='collapse' data-target='#test" . $i . "' class='accordion-toggle'>
-                      <td><button class='btn btn-default btn-xs'><span class='glyphicon glyphicon-eye-open'></span></button></td>
-                      <td>" . $row['Name'] . "</td>
+                      <td><button class='btn btn-default btn-xs'><span class='glyphicon glyphicon-plus' onclick='collapseIcon(this)'></span></button></td>
+                      <td>" . $section['Name'] . "</td>
                     </tr>
                     <tr>
                       <td colspan='12' class='hiddenRow'><div class='accordian-body collapse' id='test" . $i++ . "'> 
-                        <table class='table table-striped'>
-                          <thead>
-                            <tr><td><a href='WorkloadURL'>Workload link</a></td><td>Bandwidth: Dandwidth Details</td><td>OBS Endpoint: end point</td></tr>
-                            <tr><th>Access Key</th><th>Secret Key</th><th>Status </th><th> Created</th><th> Expires</th><th>Actions</th></tr>
-                          </thead>
-                          <tbody>
-                            <tr><td>access-key-1</td><td>secretKey-1</td><td>Status</td><td>some date</td><td>some date</td><td><a href='#' class='btn btn-default btn-sm'>
-                            <i class='glyphicon glyphicon-cog'></i></a></td></tr>
-                          </tbody>
-                        </table>            
-                    </div></td>
-                    </tr>";                  
+                        <ul>";
+                        foreach ($subSections as $subSection) {
+                          echo "<li>" . $subSection['Name'] . "</li>";
+                        }
+              echo     "</ul>             
+                      </div></td>
+                    </tr>";
             }
           ?>
 
@@ -111,18 +148,11 @@
     <div class="panel-body">
       <table class="table table-condensed" style="border-collapse:collapse;">
 
-        <thead>
-          <tr><th>&nbsp;</th>
-            <th>Sub Section</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-
         <tbody>
           <?php
             foreach ($events as $row) {
               echo "<tr data-toggle='collapse' data-target='#test" . $i . "' class='accordion-toggle'>
-                      <td><button class='btn btn-default btn-xs'><span class='glyphicon glyphicon-eye-open'></span></button></td>
+                      <td><button class='btn btn-default btn-xs'><span class='glyphicon glyphicon-plus' onclick='collapseIcon(this)'></span></button></td>
                       <td>" . $row['EventName'] . "</td>
                     </tr>
                     <tr>
@@ -137,7 +167,7 @@
                             <i class='glyphicon glyphicon-cog'></i></a></td></tr>
                           </tbody>
                         </table>            
-                    </div></td>
+                      </div></td>
                     </tr>";                  
             }
           ?>
@@ -147,6 +177,15 @@
     </div>
   </div> 
 </div>
+
+<script type="text/javascript">
+
+  function collapseIcon(element) {
+    $(element).toggleClass('glyphicon-plus');
+    $(element).toggleClass('glyphicon-minus');
+  }
+
+</script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
