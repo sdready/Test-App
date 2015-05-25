@@ -17,17 +17,6 @@ include '/srv/www/test_app/shared/config/opsworks.php';
                             FROM Sections
                          ");
 
-  $subSections = $db->query(" SELECT s.*, sr.*
-                              FROM Sections s
-                                INNER JOIN SectionRelationships sr ON s.ID = sr.ChildSectionID
-                              WHERE sr.SectionID = " . $sectionID
-                            );
-
-
-  $events = $db->query("  SELECT *
-                          FROM " . str_replace(' ', '', $sectionName) . "Events
-                      ");
-
 ?>
 
 <!DOCTYPE html>
