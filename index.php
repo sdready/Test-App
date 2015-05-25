@@ -1,3 +1,11 @@
+<?php
+include '/srv/www/test_app/shared/config/opsworks.php';
+
+
+  $db = new mysqli($host, $username, $password, $database);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
  <head>
