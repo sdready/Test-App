@@ -22,7 +22,7 @@ $db_info = new OpsWorksDb();
                         FROM Sections
                         WHERE Name = '" . $sectionName . "'");
 
-  $sectionID = (int)$result->fetch_assoc()['ID'];
+  $sectionID = 1;
 
 
   $sections = $db->query("  SELECT *
