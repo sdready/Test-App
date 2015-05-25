@@ -4,6 +4,12 @@ include '/srv/www/test_app/shared/config/opsworks.php';
 
   $db = new mysqli($host, $username, $password, $database);
 
+  $sectionName = "Acute Care";
+
+  $result = $db->query("SELECT ID
+                        FROM Sections
+                        WHERE Name = '" . $sectionName . "'");
+
 ?>
 
 <!DOCTYPE html>
