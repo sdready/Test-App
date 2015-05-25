@@ -1,9 +1,17 @@
 <?php
+include '/srv/www/test_app/shared/config/opsworks.php'; 
 
+/*
   $db_host = 'test-rds.cpnv7me8ryeg.us-east-1.rds.amazonaws.com';
   $db_username = 'shaun';
   $db_password = 'Virmire-209';
   $db_name = "test_db_2";
+*/
+
+  $db_host = $host;
+  $db_username = $username;
+  $db_password = $password;
+  $db_name = $database;
 
   $db = new mysqli($db_host, $db_username, $db_password, $db_name);
 
