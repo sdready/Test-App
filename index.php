@@ -12,11 +12,6 @@ include '/srv/www/test_app/shared/config/opsworks.php';
 
   $sectionID = (int)$result->fetch_assoc()['ID'];
 
-
-  $sections = $db->query("  SELECT *
-                            FROM Sections
-                         ");
-
 ?>
 
 <!DOCTYPE html>
