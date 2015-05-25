@@ -3,9 +3,9 @@
   $db_host = 'test-rds.cpnv7me8ryeg.us-east-1.rds.amazonaws.com';
   $db_username = 'shaun';
   $db_password = 'Virmire-209';
-  $db_table = "test_db_2";
+  $db_name = "test_db_2";
 
-  $db = new mysqli($db_host, $db_username, $db_password, $db_table);
+  $db = new mysqli($db_host, $db_username, $db_password, $db_name);
 
   if ($db->connect_errno) {
     echo "Failed to connect to MySQL: (" . $db->connect_errno . ") " . $db->connect_error;
@@ -29,6 +29,7 @@
                                 INNER JOIN SectionRelationships sr ON s.ID = sr.ChildSectionID
                               WHERE sr.SectionID = " . $sectionID
                             );
+
 
   $events = $db->query("  SELECT *
                           FROM " . str_replace(' ', '', $sectionName) . "Events
@@ -102,52 +103,31 @@
             <li><a href="#" data-toggle="collapse">Reports</a></li>
             <li><a href="#">Analytics</a></li>
           </ul>
+          <br />
+          <h4>Sections</h4>
+          <ul class="nav nav-stacked" id="accordion1">
+            <li>
+              <div class="row"><button class='btn btn-default btn-xs' data-toggle="collapse" data-parent="#accordion1" href="#firstLink">
+                <span class='glyphicon glyphicon-plus' onclick='collapseIcon(this)'></span></button>
+                <a href="" style="padding-left: 8px"><?php echo $sectionName;?></a>
+              </div>
+              <ul id="firstLink" class="collapse">
+                  <?php
+                    foreach ($subSections as $subSection) {
+                      echo '<li>' . $subSection['Name'] . '</li>';
+                    }
+                  ?>
+              </ul>
+            </li>
+        </ul>
         </div>
 
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Dashboard</h1>
 
-<div class="col-lg-6">
-  <div class="panel panel-default">
-    <div class="panel-heading"><h3>Sections</h3></div>
-    <div class="panel-body">
-      <table class="table table-condensed" style="border-collapse:collapse;">
 
-        <tbody>
-          <?php
-            $i = 0;
-            foreach ($sections as $section) {
-
-              $subSections = $db->query(" SELECT s.*, sr.*
-                                          FROM Sections s
-                                            INNER JOIN SectionRelationships sr ON s.ID = sr.ChildSectionID
-                                          WHERE sr.SectionID = " . $section['ID'] . "                                            
-                ");
-
-              echo "<tr data-toggle='collapse' data-target='#test" . $i . "' class='accordion-toggle'>
-                      <td><button class='btn btn-default btn-xs'><span class='glyphicon glyphicon-plus' onclick='collapseIcon(this)'></span></button></td>
-                      <td>" . $section['Name'] . "</td>
-                    </tr>
-                    <tr>
-                      <td colspan='12' class='hiddenRow'><div class='accordian-body collapse' id='test" . $i++ . "'> 
-                        <ul>";
-                        foreach ($subSections as $subSection) {
-                          echo "<li>" . $subSection['Name'] . "</li>";
-                        }
-              echo     "</ul>             
-                      </div></td>
-                    </tr>";
-            }
-          ?>
-
-        </tbody>
-      </table>
-    </div>
-  </div> 
-</div>
-
-<div class="col-lg-6">
+<div class="col-lg-9">
   <div class="panel panel-default">
     <div class="panel-heading"><h3>Events</h3></div>
     <div class="panel-body">
@@ -155,6 +135,7 @@
 
         <tbody>
           <?php
+          $i = 0;
             foreach ($events as $row) {
               echo "<tr data-toggle='collapse' data-target='#test" . $i . "' class='accordion-toggle'>
                       <td><button class='btn btn-default btn-xs'><span class='glyphicon glyphicon-plus' onclick='collapseIcon(this)'></span></button></td>
